@@ -23,95 +23,104 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.alura.panucci.sampledata.bottomAppBarItems
+import br.com.alura.panucci.sampledata.sampleProducts
 import br.com.alura.panucci.ui.components.BottomAppBarItem
 import br.com.alura.panucci.ui.components.PanucciBottomAppBar
+import br.com.alura.panucci.ui.screens.HighlightsListScreen
 import br.com.alura.panucci.ui.theme.PanucciTheme
 
 class MainActivity : ComponentActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent {
 
-            val navController = rememberNavController()
+      val navController = rememberNavController()
 
-            val currentScreen = ""
-
-            PanucciTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    var selectedItem by remember(currentScreen) {
-                        val item = bottomAppBarItems.find { currentScreen == it.label }
-                        mutableStateOf(item)
-                    }
-                    PanucciApp(
-                        bottomAppBarItemSelected = selectedItem ?: bottomAppBarItems.first(),
-                        onBottomAppBarItemSelectedChange = {
-                            selectedItem = it
-                        },
-                        onFabClick = {
-                        }) {
-                        // TODO implementar nav host
-                    }
-                }
+      PanucciTheme {
+        Surface(
+          modifier = Modifier.fillMaxSize(),
+          color = MaterialTheme.colorScheme.background
+        ) {
+          var selectedItem by remember {
+            val item = bottomAppBarItems.first()
+            mutableStateOf(item)
+          }
+          PanucciApp(
+            bottomAppBarItemSelected = selectedItem,
+            onBottomAppBarItemSelectedChange = {
+              selectedItem = it
+            },
+            onFabClick = {
+            }) {
+            NavHost(
+              navController = navController,
+              startDestination = "home"
+            ) {
+              composable("home") {
+                HighlightsListScreen(products = sampleProducts )
+              }
             }
+          }
         }
+      }
     }
+  }
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PanucciApp(
-    bottomAppBarItemSelected: BottomAppBarItem = bottomAppBarItems.first(),
-    onBottomAppBarItemSelectedChange: (BottomAppBarItem) -> Unit = {},
-    onFabClick: () -> Unit = {},
-    content: @Composable () -> Unit
+  bottomAppBarItemSelected: BottomAppBarItem = bottomAppBarItems.first(),
+  onBottomAppBarItemSelectedChange: (BottomAppBarItem) -> Unit = {},
+  onFabClick: () -> Unit = {},
+  content: @Composable () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(text = "Ristorante Panucci")
-                },
-            )
+  Scaffold(
+    topBar = {
+      CenterAlignedTopAppBar(
+        title = {
+          Text(text = "Ristorante Panucci")
         },
-        bottomBar = {
-            PanucciBottomAppBar(
-                item = bottomAppBarItemSelected,
-                items = bottomAppBarItems,
-                onItemChange = onBottomAppBarItemSelectedChange,
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onFabClick
-            ) {
-                Icon(
-                    Icons.Filled.PointOfSale,
-                    contentDescription = null
-                )
-            }
-        }
-    ) {
-        Box(
-            modifier = Modifier.padding(it)
-        ) {
-            content()
-        }
+      )
+    },
+    bottomBar = {
+      PanucciBottomAppBar(
+        item = bottomAppBarItemSelected,
+        items = bottomAppBarItems,
+        onItemChange = onBottomAppBarItemSelectedChange,
+      )
+    },
+    floatingActionButton = {
+      FloatingActionButton(
+        onClick = onFabClick
+      ) {
+        Icon(
+          Icons.Filled.PointOfSale,
+          contentDescription = null
+        )
+      }
     }
+  ) {
+    Box(
+      modifier = Modifier.padding(it)
+    ) {
+      content()
+    }
+  }
 }
 
 @Preview
 @Composable
 private fun PanucciAppPreview() {
-    PanucciTheme {
-        Surface {
-            PanucciApp {}
-        }
+  PanucciTheme {
+    Surface {
+      PanucciApp {}
     }
+  }
 }
