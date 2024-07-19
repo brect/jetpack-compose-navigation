@@ -62,7 +62,10 @@ class MainActivity : ComponentActivity() {
               startDestination = "home"
             ) {
               composable("home") {
-                HighlightsListScreen(products = sampleProducts )
+                HighlightsListScreen(products = sampleProducts)
+                remember {
+                  navController.navigate("menu")
+                }
               }
             }
           }
@@ -70,7 +73,6 @@ class MainActivity : ComponentActivity() {
       }
     }
   }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
