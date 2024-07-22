@@ -2,6 +2,7 @@ package br.com.alura.panucci
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -115,8 +116,10 @@ class MainActivity : ComponentActivity() {
               composable(AppDestination.Highlight.route) {
                 HighlightsListScreen(
                   products = sampleProducts,
-                  onNavigateToDetails = {
-                    navController.navigate(AppDestination.ProductDetails.route)
+                  onNavigateToDetails = { product ->
+                    navController.navigate(
+                      "${AppDestination.ProductDetails.route}/${product.id}"
+                    )
                   },
                   onNavigateToCheckout = {
                     navController.navigate(AppDestination.Checkout.route)
@@ -126,24 +129,52 @@ class MainActivity : ComponentActivity() {
               composable(AppDestination.Menu.route) {
                 MenuListScreen(
                   products = sampleProducts,
-                  onNavigateToDetails = {
-                    navController.navigate(AppDestination.ProductDetails.route)
+                  onNavigateToDetails = { product ->
+                    navController.navigate(
+                      "${AppDestination.ProductDetails.route}/${product.id}"
+                    )
                   }
                 )
               }
               composable(AppDestination.Drinks.route) {
                 DrinksListScreen(products = sampleProducts,
-                  onNavigateToDetails = {
-                    navController.navigate(AppDestination.ProductDetails.route)
+                  onNavigateToDetails = { product ->
+                    navController.navigate(
+                      "${AppDestination.ProductDetails.route}/${product.price}"
+                    )
                   })
               }
-              composable(AppDestination.ProductDetails.route) {
-                ProductDetailsScreen(product = sampleProducts.random(), onNavigateToCheckout = {
-                  navController.navigate(AppDestination.Checkout.route)
-                })
+              composable(
+                "${AppDestination.ProductDetails.route}/{productId}"
+              ) { backStackEntry ->
+
+                val id = backStackEntry.arguments?.getString("productId")
+                Log.i("MainActivity", "onCreate: productId - $id")
+
+                sampleProducts.find {
+                  id == it.id
+                }?.let { product ->
+                  ProductDetailsScreen(
+                    product = product,
+                    onNavigateToCheckout = {
+                      navController.navigate(AppDestination.Checkout.route)
+                    })
+                } ?: LaunchedEffect(Unit) {
+                  Toast.makeText(
+                    this@MainActivity,
+                    "Detalhes do Produto não encontrado",
+                    Toast.LENGTH_SHORT
+                  ).show()
+
+                  navController.popBackStack()
+                }
               }
+
               composable(AppDestination.Checkout.route) {
-                CheckoutScreen(products = sampleProducts)
+                CheckoutScreen(
+                  products = sampleProducts,
+                  onPopBackStack = { navController.navigateUp() }
+                )
               }
             }
           }

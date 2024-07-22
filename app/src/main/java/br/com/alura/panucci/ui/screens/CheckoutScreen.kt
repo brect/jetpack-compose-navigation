@@ -24,149 +24,150 @@ import br.com.alura.panucci.ui.theme.PanucciTheme
 
 @Composable
 fun CheckoutScreen(
-    modifier: Modifier = Modifier,
-    products: List<Product> = emptyList()
+  modifier: Modifier = Modifier,
+  products: List<Product> = emptyList(),
+  onPopBackStack: () -> Unit = {}
 ) {
-    Box(
-        modifier.fillMaxSize()
+  Box(
+    modifier.fillMaxSize()
+  ) {
+    LazyColumn(
+      Modifier.fillMaxWidth(),
+      contentPadding = PaddingValues(
+        start = 16.dp,
+        top = 16.dp,
+        end = 16.dp,
+        bottom = 100.dp
+      )
     ) {
-        LazyColumn(
+      item {
+        Text(
+          text = "Pedido",
+          fontSize = 24.sp,
+          fontWeight = FontWeight(500)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+      }
+      items(products) { p ->
+        CheckoutItemCard(product = p)
+        Spacer(Modifier.height(16.dp))
+      }
+      item {
+        Column {
+          Text(
+            text = "Pagamento",
+            fontSize = 24.sp,
+            fontWeight = FontWeight(500)
+          )
+          Row(
             Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                top = 16.dp,
-                end = 16.dp,
-                bottom = 100.dp
-            )
-        ) {
-            item {
-                Text(
-                    text = "Pedido",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight(500)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+          ) {
+            Row(
+              Modifier.padding(vertical = 16.dp),
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              Text(
+                text = "VISA",
+                Modifier
+                  .background(
+                    MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(4.dp)
+                  )
+                  .padding(4.dp)
+              )
+              Spacer(modifier = Modifier.width(16.dp))
+              Column {
+                Text(text = "VISA Classic")
+                Text(text = "****-0976")
+              }
             }
-            items(products) { p ->
-                CheckoutItemCard(product = p)
-                Spacer(Modifier.height(16.dp))
-            }
-            item {
-                Column {
-                    Text(
-                        text = "Pagamento",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight(500)
-                    )
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            Modifier.padding(vertical = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "VISA",
-                                Modifier
-                                    .background(
-                                        MaterialTheme.colorScheme.primaryContainer,
-                                        shape = RoundedCornerShape(4.dp)
-                                    )
-                                    .padding(4.dp)
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Column {
-                                Text(text = "VISA Classic")
-                                Text(text = "****-0976")
-                            }
-                        }
-                        Icon(
-                            Icons.Outlined.ArrowForwardIos,
-                            contentDescription = null
-                        )
-                    }
-                }
-            }
-            item {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Text(
-                        text = "Confirmar",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight(500)
-                    )
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "Pedido")
-                            Text(text = "9.0")
-                        }
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "Serviço (10%)")
-                            Text(text = "9.0")
-                        }
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "Total")
-                            Text(text = "9.0")
-                        }
-                    }
-                }
-            }
-        }
-        Button(
-            onClick = { /*TODO*/ },
-            Modifier
-                .padding(
-                    16.dp
-                )
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-        ) {
             Icon(
-                Icons.Outlined.AccountBalanceWallet,
-                contentDescription = null,
-                tint = Color.White
+              Icons.Outlined.ArrowForwardIos,
+              contentDescription = null
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Pedir",
-                color = Color.White
-            )
+          }
         }
+      }
+      item {
+        Column(
+          verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+          Text(
+            text = "Confirmar",
+            fontSize = 24.sp,
+            fontWeight = FontWeight(500)
+          )
+          Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+          ) {
+            Row(
+              Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+              Text(text = "Pedido")
+              Text(text = "9.0")
+            }
+            Row(
+              Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+              Text(text = "Serviço (10%)")
+              Text(text = "9.0")
+            }
+            Row(
+              Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+              Text(text = "Total")
+              Text(text = "9.0")
+            }
+          }
+        }
+      }
     }
+    Button(
+      onClick = { onPopBackStack() },
+      Modifier
+        .padding(
+          16.dp
+        )
+        .fillMaxWidth()
+        .align(Alignment.BottomCenter)
+    ) {
+      Icon(
+        Icons.Outlined.AccountBalanceWallet,
+        contentDescription = null,
+        tint = Color.White
+      )
+      Spacer(modifier = Modifier.width(8.dp))
+      Text(
+        text = "Pedir",
+        color = Color.White
+      )
+    }
+  }
 }
 
 @Preview
 @Composable
 fun CheckoutScreenPreview() {
-    PanucciTheme {
-        Surface {
-            CheckoutScreen(
-                products = sampleProducts
-            )
-        }
+  PanucciTheme {
+    Surface {
+      CheckoutScreen(
+        products = sampleProducts
+      )
     }
+  }
 }
 
 @Preview
 @Composable
 fun CheckoutScreenWithoutProductsPreview() {
-    PanucciTheme {
-        Surface {
-            CheckoutScreen()
-        }
+  PanucciTheme {
+    Surface {
+      CheckoutScreen()
     }
+  }
 }
