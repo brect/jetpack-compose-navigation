@@ -17,10 +17,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
@@ -43,6 +43,15 @@ class MainActivity : ComponentActivity() {
     setContent {
 
       val navController = rememberNavController()
+
+
+      LaunchedEffect(Unit) {
+        navController.addOnDestinationChangedListener({ controller, destination, arguments ->
+          val routes = navController.backQueue.map {
+            it.destination.route
+          }
+        })
+      }
 
       val currentBackStackEntryAsState by navController.currentBackStackEntryAsState()
 
@@ -68,7 +77,10 @@ class MainActivity : ComponentActivity() {
             onBottomAppBarItemSelectedChange = {
               val route = it.route
 
-              navController.navigate(route)
+              navController.navigate(route) {
+                launchSingleTop = true
+                popUpTo(route = route)
+              }
             },
             onFabClick = {
             }) {
