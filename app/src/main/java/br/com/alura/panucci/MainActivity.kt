@@ -1,6 +1,7 @@
 package br.com.alura.panucci
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -49,11 +50,12 @@ class MainActivity : ComponentActivity() {
 
 
       LaunchedEffect(Unit) {
-        navController.addOnDestinationChangedListener({ controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, _, _ ->
           val routes = navController.backQueue.map {
             it.destination.route
           }
-        })
+          Log.i("MainActivity", "onCreate: back stack - $routes")
+        }
       }
 
       val currentBackStackEntryAsState by navController.currentBackStackEntryAsState()
@@ -75,6 +77,20 @@ class MainActivity : ComponentActivity() {
             mutableStateOf(item)
           }
 
+          val containsInBottomAppBarItems = currentDestination?.let { destination ->
+            bottomAppBarItems.find {
+              it.destination.route == destination.route
+            }
+          } != null
+
+          val isShowFab = when (currentDestination?.route) {
+            AppDestination.Menu.route,
+            AppDestination.Drinks.route,
+            AppDestination.Highlight.route -> true
+
+            else -> false
+          }
+
           PanucciApp(
             bottomAppBarItemSelected = selectedItem,
             onBottomAppBarItemSelectedChange = {
@@ -87,7 +103,10 @@ class MainActivity : ComponentActivity() {
             },
             onFabClick = {
               navController.navigate(AppDestination.Checkout.route)
-            }
+            },
+            isShowTopBar = containsInBottomAppBarItems,
+            isShowBottomBar = containsInBottomAppBarItems,
+            isShowFab = isShowFab
           ) {
             NavHost(
               navController = navController,
@@ -106,7 +125,7 @@ class MainActivity : ComponentActivity() {
               }
               composable(AppDestination.Menu.route) {
                 MenuListScreen(
-                   products = sampleProducts,
+                  products = sampleProducts,
                   onNavigateToDetails = {
                     navController.navigate(AppDestination.ProductDetails.route)
                   }
@@ -140,31 +159,41 @@ fun PanucciApp(
   bottomAppBarItemSelected: BottomAppBarItem = bottomAppBarItems.first(),
   onBottomAppBarItemSelectedChange: (BottomAppBarItem) -> Unit = {},
   onFabClick: () -> Unit = {},
-  content: @Composable () -> Unit
+  isShowTopBar: Boolean = false,
+  isShowBottomBar: Boolean = false,
+  isShowFab: Boolean = false,
+  content: @Composable () -> Unit,
 ) {
   Scaffold(
     topBar = {
-      CenterAlignedTopAppBar(
-        title = {
-          Text(text = "Ristorante Panucci")
-        },
-      )
+      if (isShowTopBar) {
+        CenterAlignedTopAppBar(
+          title = {
+            Text(text = "Ristorante Panucci")
+          },
+        )
+      }
     },
     bottomBar = {
-      PanucciBottomAppBar(
-        item = bottomAppBarItemSelected,
-        items = bottomAppBarItems,
-        onItemChange = onBottomAppBarItemSelectedChange,
-      )
+      if (isShowBottomBar) {
+        PanucciBottomAppBar(
+          item = bottomAppBarItemSelected,
+          items = bottomAppBarItems,
+          onItemChange = onBottomAppBarItemSelectedChange,
+        )
+      }
     },
     floatingActionButton = {
-      FloatingActionButton(
-        onClick = onFabClick
-      ) {
-        Icon(
-          Icons.Filled.PointOfSale,
-          contentDescription = null
-        )
+      if (isShowFab) {
+        FloatingActionButton(
+          onClick = onFabClick
+        ) {
+          Icon(
+            Icons.Filled.PointOfSale,
+            contentDescription = null
+          )
+        }
+
       }
     }
   ) {
