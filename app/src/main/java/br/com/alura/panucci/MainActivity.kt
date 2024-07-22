@@ -31,9 +31,11 @@ import br.com.alura.panucci.sampledata.bottomAppBarItems
 import br.com.alura.panucci.sampledata.sampleProducts
 import br.com.alura.panucci.ui.components.BottomAppBarItem
 import br.com.alura.panucci.ui.components.PanucciBottomAppBar
+import br.com.alura.panucci.ui.screens.CheckoutScreen
 import br.com.alura.panucci.ui.screens.DrinksListScreen
 import br.com.alura.panucci.ui.screens.HighlightsListScreen
 import br.com.alura.panucci.ui.screens.MenuListScreen
+import br.com.alura.panucci.ui.screens.ProductDetailsScreen
 import br.com.alura.panucci.ui.theme.PanucciTheme
 
 class MainActivity : ComponentActivity() {
@@ -83,19 +85,48 @@ class MainActivity : ComponentActivity() {
               }
             },
             onFabClick = {
+
+              navController.navigate("checkour")
+
             }) {
             NavHost(
               navController = navController,
               startDestination = "highlight"
             ) {
               composable("highlight") {
-                HighlightsListScreen(products = sampleProducts)
+                HighlightsListScreen(
+                  products = sampleProducts,
+                  onNavigateToDetails = {
+                    navController.navigate("productsDetails")
+                  },
+                  onNavigateToCheckout = {
+                    navController.navigate("checkout")
+                  }
+                )
               }
               composable("menu") {
-                MenuListScreen(products = sampleProducts)
+                MenuListScreen(
+                  products = sampleProducts,
+                  onNavigateToDetails = {
+                    navController.navigate("productsDetails")
+                  }
+                )
               }
               composable("drinks") {
-                DrinksListScreen(products = sampleProducts)
+                DrinksListScreen(products = sampleProducts,
+                  onNavigateToDetails = {
+                    navController.navigate("productsDetails")
+                  })
+              }
+
+              composable("productsDetails") {
+                ProductDetailsScreen(product = sampleProducts.random(), onNavigateToCheckout = {
+                  navController.navigate("checkout")
+                })
+              }
+
+              composable("checkout") {
+                CheckoutScreen(products = sampleProducts)
               }
             }
           }
