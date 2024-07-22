@@ -30,7 +30,9 @@ import br.com.alura.panucci.sampledata.bottomAppBarItems
 import br.com.alura.panucci.sampledata.sampleProducts
 import br.com.alura.panucci.ui.components.BottomAppBarItem
 import br.com.alura.panucci.ui.components.PanucciBottomAppBar
+import br.com.alura.panucci.ui.screens.DrinksListScreen
 import br.com.alura.panucci.ui.screens.HighlightsListScreen
+import br.com.alura.panucci.ui.screens.MenuListScreen
 import br.com.alura.panucci.ui.theme.PanucciTheme
 
 class MainActivity : ComponentActivity() {
@@ -46,26 +48,34 @@ class MainActivity : ComponentActivity() {
           modifier = Modifier.fillMaxSize(),
           color = MaterialTheme.colorScheme.background
         ) {
+
           var selectedItem by remember {
             val item = bottomAppBarItems.first()
             mutableStateOf(item)
           }
+
           PanucciApp(
             bottomAppBarItemSelected = selectedItem,
             onBottomAppBarItemSelectedChange = {
               selectedItem = it
+              val route = it.route
+
+              navController.navigate(route)
             },
             onFabClick = {
             }) {
             NavHost(
               navController = navController,
-              startDestination = "home"
+              startDestination = "highlight"
             ) {
-              composable("home") {
+              composable("highlight") {
                 HighlightsListScreen(products = sampleProducts)
-                remember {
-                  navController.navigate("menu")
-                }
+              }
+              composable("menu") {
+                MenuListScreen(products = sampleProducts)
+              }
+              composable("drinks") {
+                DrinksListScreen(products = sampleProducts)
               }
             }
           }
