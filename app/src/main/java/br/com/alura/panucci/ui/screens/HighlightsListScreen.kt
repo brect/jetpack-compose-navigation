@@ -17,58 +17,63 @@ import br.com.alura.panucci.sampledata.sampleProducts
 import br.com.alura.panucci.ui.components.HighlightProductCard
 import br.com.alura.panucci.ui.theme.PanucciTheme
 import br.com.alura.panucci.ui.theme.caveatFont
+import br.com.alura.panucci.ui.uistate.HighlightsListUiState
 
 @Composable
 fun HighlightsListScreen(
-    modifier: Modifier = Modifier,
-    title: String = "Destaques do dia",
-    products: List<Product> = emptyList(),
-    onNavigateToCheckout: () -> Unit = {},
-    onNavigateToDetails: (Product) -> Unit = {}
+  modifier: Modifier = Modifier,
+  title: String = "Destaques do dia",
+  onNavigateToCheckout: () -> Unit = {},
+  onNavigateToDetails: (Product) -> Unit = {},
+  uiState: HighlightsListUiState = HighlightsListUiState()
 ) {
-    Column(
-        modifier
-            .fillMaxSize()
-    ) {
-        Surface {
-            Text(
-                text = title,
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                fontFamily = caveatFont,
-                fontSize = 32.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-        LazyColumn(
-            modifier
-                .fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(products) { p ->
-                HighlightProductCard(
-                    product = p,
-                    Modifier.clickable {
-                        onNavigateToDetails(p)
-                    },
-                    onOrderClick = onNavigateToCheckout
-                )
-            }
-        }
+  val products = uiState.products
+
+  Column(
+    modifier
+      .fillMaxSize()
+  ) {
+    Surface {
+      Text(
+        text = title,
+        Modifier
+          .fillMaxWidth()
+          .padding(vertical = 8.dp),
+        fontFamily = caveatFont,
+        fontSize = 32.sp,
+        textAlign = TextAlign.Center
+      )
     }
+    LazyColumn(
+      modifier
+        .fillMaxSize(),
+      contentPadding = PaddingValues(16.dp),
+      verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+      items(products) { p ->
+        HighlightProductCard(
+          product = p,
+          Modifier.clickable {
+            onNavigateToDetails(p)
+          },
+          onOrderClick = onNavigateToCheckout
+        )
+      }
+    }
+  }
 }
 
 @Preview
 @Composable
 fun HighlightsListScreenPreview() {
-    PanucciTheme {
-        Surface {
-            HighlightsListScreen(
-                products = sampleProducts,
-                title = "Destaques do dia"
-            )
-        }
+  PanucciTheme {
+    Surface {
+      HighlightsListScreen(
+        title = "Destaques do dia",
+        uiState = HighlightsListUiState(
+          products = sampleProducts
+        )
+      )
     }
+  }
 }

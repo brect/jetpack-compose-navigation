@@ -17,54 +17,58 @@ import br.com.alura.panucci.sampledata.sampleProducts
 import br.com.alura.panucci.ui.components.MenuProductCard
 import br.com.alura.panucci.ui.theme.PanucciTheme
 import br.com.alura.panucci.ui.theme.caveatFont
+import br.com.alura.panucci.ui.uistate.MenuListUiState
 
 @Composable
 fun MenuListScreen(
-    modifier: Modifier = Modifier,
-    title: String = "Menu",
-    products: List<Product> = emptyList(),
-    onNavigateToDetails: (Product) -> Unit = {}
+  modifier: Modifier = Modifier,
+  title: String = "Menu",
+  onNavigateToDetails: (Product) -> Unit = {},
+  uiState: MenuListUiState = MenuListUiState()
 ) {
-    Column(
-        modifier.fillMaxSize()
-    ) {
-        Surface {
-            Text(
-                text = title,
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                fontFamily = caveatFont,
-                fontSize = 32.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-        LazyColumn(
-            modifier
-                .fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(products) { p ->
-                MenuProductCard(
-                    product = p,
-                    Modifier.clickable {
-                        onNavigateToDetails(p)
-                    }
-                )
-            }
-        }
+
+  val products = uiState.products
+
+  Column(
+    modifier.fillMaxSize()
+  ) {
+    Surface {
+      Text(
+        text = title,
+        Modifier
+          .fillMaxWidth()
+          .padding(vertical = 8.dp),
+        fontFamily = caveatFont,
+        fontSize = 32.sp,
+        textAlign = TextAlign.Center
+      )
     }
+    LazyColumn(
+      modifier
+        .fillMaxSize(),
+      contentPadding = PaddingValues(16.dp),
+      verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+      items(products) { p ->
+        MenuProductCard(
+          product = p,
+          Modifier.clickable {
+            onNavigateToDetails(p)
+          }
+        )
+      }
+    }
+  }
 }
 
 @Preview
 @Composable
 fun MenuListScreenPreview() {
-    PanucciTheme {
-        Surface {
-            MenuListScreen(
-                products = sampleProducts
-            )
-        }
+  PanucciTheme {
+    Surface {
+      MenuListScreen(
+        uiState = MenuListUiState(sampleProducts)
+      )
     }
+  }
 }
