@@ -27,13 +27,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import br.com.alura.panucci.navigation.PanucciNavHost
-import br.com.alura.panucci.navigation.bottomAppBarItems
 import br.com.alura.panucci.navigation.drinksRoute
 import br.com.alura.panucci.navigation.highlightsListRoute
 import br.com.alura.panucci.navigation.menuRoute
 import br.com.alura.panucci.navigation.navigateToCheckout
+import br.com.alura.panucci.navigation.navigateToDrinks
+import br.com.alura.panucci.navigation.navigateToHighlightsList
+import br.com.alura.panucci.navigation.navigateToMenu
 import br.com.alura.panucci.ui.components.BottomAppBarItem
 import br.com.alura.panucci.ui.components.PanucciBottomAppBar
+import br.com.alura.panucci.ui.components.bottomAppBarItems
 import br.com.alura.panucci.ui.theme.PanucciTheme
 
 class MainActivity : ComponentActivity() {
@@ -86,12 +89,11 @@ class MainActivity : ComponentActivity() {
 
           PanucciApp(
             bottomAppBarItemSelected = selectedItem,
-            onBottomAppBarItemSelectedChange = {
-              val route = it.destination
-
-              navController.navigate(route) {
-                launchSingleTop = true
-                popUpTo(route = route)
+            onBottomAppBarItemSelectedChange = { item ->
+              when(item){
+                BottomAppBarItem.HighlightsList -> navController.navigateToHighlightsList()
+                BottomAppBarItem.Menu -> navController.navigateToMenu()
+                BottomAppBarItem.Drinks -> navController.navigateToDrinks()
               }
             },
             onFabClick = {

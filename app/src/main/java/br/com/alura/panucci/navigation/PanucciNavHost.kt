@@ -18,10 +18,3 @@ fun PanucciNavHost(navController: NavHostController) {
     checkoutScreen(navController)
   }
 }
-
-
-val bottomAppBarItems = listOf(
-  BottomAppBarItem.HighlightsList,
-  BottomAppBarItem.Menu,
-  BottomAppBarItem.Drinks
-)
