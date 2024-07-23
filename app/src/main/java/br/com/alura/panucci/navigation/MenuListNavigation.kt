@@ -7,10 +7,10 @@ import androidx.navigation.compose.composable
 import br.com.alura.panucci.sampledata.sampleProducts
 import br.com.alura.panucci.ui.screens.MenuListScreen
 
-private const val menuNavigationRoute = "menu"
+internal const val menuRoute = "menu"
 
 fun NavGraphBuilder.menuScreen(navController: NavHostController) {
-  composable(menuNavigationRoute) {
+  composable(menuRoute) {
     MenuListScreen(
       products = sampleProducts,
       onNavigateToDetails = { product ->
@@ -21,5 +21,5 @@ fun NavGraphBuilder.menuScreen(navController: NavHostController) {
 }
 
 fun NavController.navigateToMenu() {
-  navigate(menuNavigationRoute)
+  navigate(menuRoute)
 }
